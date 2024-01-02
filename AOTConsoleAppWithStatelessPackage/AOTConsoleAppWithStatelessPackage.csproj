@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Stateless" Version="5.15.0" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
   </ItemGroup>
 
 </Project>
