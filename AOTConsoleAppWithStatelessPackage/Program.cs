@@ -10,12 +10,14 @@ class Program
     {
         TestStateless();
         TestSQLite();
+        Console.Write("Press any key to close the application");
+        Console.ReadLine();
     }
 
     static void TestStateless()
     {
         var machine = new StateMachine<State, string>(State.Green);
-
+        Console.WriteLine("Now testing Staless \n");
         machine.Configure(State.Green)
             .Permit("Change", State.Yellow);
 
@@ -34,41 +36,50 @@ class Program
 
         Console.WriteLine($"Current state: {machine.State}");
 
-        Console.Write("Press any key to close the application");
-        Console.ReadLine();
+        Console.WriteLine("\n Test Complete \n");
     }
 
     static void TestSQLite()
     {
-        Console.WriteLine("SQLite AOT Console App");
-
-        using (var connection = new SQLiteConnection("Data Source=sample.db"))
+        try
         {
-            connection.Open();
 
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = "CREATE TABLE IF NOT EXISTS SampleTable (Id INT, Name TEXT)";
-                command.ExecuteNonQuery();
-            }
+            Console.WriteLine("\n SQLite AOT Console App Testing");
 
-            using (var command = connection.CreateCommand())
+            using (var connection = new SQLiteConnection("Data Source=sample.db"))
             {
-                command.CommandText = "INSERT INTO SampleTable (Id, Name) VALUES (1, 'John Doe')";
-                command.ExecuteNonQuery();
-            }
+                connection.Open();
 
-            using (var command = connection.CreateCommand())
-            {
-                command.CommandText = "SELECT * FROM SampleTable";
-                using (var reader = command.ExecuteReader())
+                using (var command = connection.CreateCommand())
                 {
-                    while (reader.Read())
+                    command.CommandText = "CREATE TABLE IF NOT EXISTS SampleTable (Id INT, Name TEXT)";
+                    command.ExecuteNonQuery();
+                }
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "INSERT INTO SampleTable (Id, Name) VALUES (1, 'John Doe')";
+                    command.ExecuteNonQuery();
+                }
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT * FROM SampleTable";
+                    using (var reader = command.ExecuteReader())
                     {
-                        Console.WriteLine($"Id: {reader.GetInt32(0)}, Name: {reader.GetString(1)}");
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"Id: {reader.GetInt32(0)}, Name: {reader.GetString(1)}");
+                        }
                     }
                 }
+
+                Console.WriteLine("\n Test Complete \n");
             }
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
         }
     }
 
