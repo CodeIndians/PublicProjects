@@ -22,30 +22,24 @@ class Program
             }
         }
 
-        SoundPlayer player = new SoundPlayer("C:/tmp/test.wav");
+        // start recording 
+        mciSendString("open new Type waveaudio Alias recsound", "", 0, 0);
+        mciSendString("record recsound", "", 0, 0);
+
+        Console.WriteLine("recording has started, press any key to stop recording");
+        Console.ReadKey();
+
+        //save recording
+        mciSendString(@"save recsound " + "C:/tmp/" + "recording" + ".wav", "", 0, 0);
+        mciSendString("close recsound ", "", 0, 0);
+        Console.WriteLine("Recording saved to C:/tmp/recording.wav");
+
+        Console.WriteLine("Press any key to play the recording");
+        Console.ReadKey();
+
+        // play the recored file
+        SoundPlayer player = new SoundPlayer("C:/tmp/recording.wav");
         player.PlaySync();
-
-        //// NAudio
-        //WaveOutEvent waveOut = new WaveOutEvent();
-        //AudioFileReader audioFile = new AudioFileReader("test.wav");
-        //waveOut.Init(audioFile);
-        //waveOut.Play();
-
-        //// Gma.System.MouseKeyHook
-        //IKeyboardMouseEvents globalHook = Hook.GlobalEvents();
-        //globalHook.KeyPress += (sender, e) =>
-        //{
-        //    Console.WriteLine($"Key Pressed: {e.KeyChar}");
-        //};
-
-        //Console.WriteLine("Press any key to exit.");
-        //Console.ReadKey();
-        //Console.ReadKey();
-
-        //// Clean up
-        //globalHook.Dispose();
-        //waveOut.Stop();
-        //waveOut.Dispose();
 
     }
 
