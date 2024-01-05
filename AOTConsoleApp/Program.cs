@@ -22,24 +22,49 @@ class Program
             }
         }
 
-        // start recording 
-        mciSendString("open new Type waveaudio Alias recsound", "", 0, 0);
-        mciSendString("record recsound", "", 0, 0);
+        string directoryPath = "C:\\tmp";
 
-        Console.WriteLine("recording has started, press any key to stop recording");
+        // Check if the directory exists
+        if (!Directory.Exists(directoryPath))
+        {
+            // If not, create the directory
+            Directory.CreateDirectory(directoryPath);
+            Console.WriteLine("Directory created successfully.");
+        }
+        else
+        {
+            Console.WriteLine("Directory already exists.");
+        }
+
+        int recordingCounter = 1;
+
+        // start recording loop
+        while (!Console.KeyAvailable)
+        {
+            string recordingFileName = $"C:/tmp/recording{recordingCounter}.wav";
+
+            // start recording
+            mciSendString("open new Type waveaudio Alias recsound", "", 0, 0);
+            mciSendString("record recsound", "", 0, 0);
+
+            Console.WriteLine($"Recording {recordingCounter}, press any key to stop recording");
+            Thread.Sleep(5000); // Record for 5 seconds
+
+            // stop recording
+            mciSendString("stop recsound", "", 0, 0);
+            mciSendString($@"save recsound {recordingFileName}", "", 0, 0);
+            mciSendString("close recsound", "", 0, 0);
+
+            Console.WriteLine($"Recording {recordingCounter} saved to {recordingFileName}");
+
+            byte[] bytes = File.ReadAllBytes(recordingFileName);
+
+            recordingCounter++;
+        }
+        
+
+        Console.WriteLine("Press any key to play the recordings");
         Console.ReadKey();
-
-        //save recording
-        mciSendString(@"save recsound " + "C:/tmp/" + "recording" + ".wav", "", 0, 0);
-        mciSendString("close recsound ", "", 0, 0);
-        Console.WriteLine("Recording saved to C:/tmp/recording.wav");
-
-        Console.WriteLine("Press any key to play the recording");
-        Console.ReadKey();
-
-        // play the recored file
-        SoundPlayer player = new SoundPlayer("C:/tmp/recording.wav");
-        player.PlaySync();
 
     }
 
