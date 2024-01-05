@@ -1,11 +1,12 @@
-﻿using System;
-using System.Data;
-using System.Data.Common;
-using NAudio.Wave;
-using Gma.System.MouseKeyHook;
+﻿using System.Media;
+using System.Runtime.InteropServices;
 
 class Program
 {
+
+    [DllImport("winmm.dll", EntryPoint = "mciSendStringA", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
+    private static extern int mciSendString(string lpstrCommand, string lpstrReturnString, int uReturnLength, int hwndCallback);
+
     static void Main()
     {
         Console.WriteLine("Testing Microsoft.Data.Sqlite, NAudio, and Gma.System.MouseKeyHook");
@@ -21,26 +22,32 @@ class Program
             }
         }
 
-        // NAudio
-        WaveOutEvent waveOut = new WaveOutEvent();
-        AudioFileReader audioFile = new AudioFileReader("test.wav");
-        waveOut.Init(audioFile);
-        waveOut.Play();
+        SoundPlayer player = new SoundPlayer("C:/tmp/test.wav");
+        player.PlaySync();
 
-        // Gma.System.MouseKeyHook
-        IKeyboardMouseEvents globalHook = Hook.GlobalEvents();
-        globalHook.KeyPress += (sender, e) =>
-        {
-            Console.WriteLine($"Key Pressed: {e.KeyChar}");
-        };
+        //// NAudio
+        //WaveOutEvent waveOut = new WaveOutEvent();
+        //AudioFileReader audioFile = new AudioFileReader("test.wav");
+        //waveOut.Init(audioFile);
+        //waveOut.Play();
 
-        Console.WriteLine("Press any key to exit.");
-        Console.ReadKey();
+        //// Gma.System.MouseKeyHook
+        //IKeyboardMouseEvents globalHook = Hook.GlobalEvents();
+        //globalHook.KeyPress += (sender, e) =>
+        //{
+        //    Console.WriteLine($"Key Pressed: {e.KeyChar}");
+        //};
 
-        // Clean up
-        globalHook.Dispose();
-        waveOut.Stop();
-        waveOut.Dispose();
+        //Console.WriteLine("Press any key to exit.");
+        //Console.ReadKey();
+        //Console.ReadKey();
+
+        //// Clean up
+        //globalHook.Dispose();
+        //waveOut.Stop();
+        //waveOut.Dispose();
+
     }
+
 }
 
